@@ -1,0 +1,38 @@
+<!--
+  templateType: email_subscription_preferences_page
+  isAvailableForNewContent: true
+  label: Email Subscription Preferences Page
+-->
+
+{% extends "././blank.html" %}
+{% include "./translations.html" as translations %} 
+
+{% block body %}
+  <script type="text/javascript">
+    const translations = {{ translations|tojson }};
+  </script>
+  
+  {# this is here in case we some day have access to the original requests query vars #}
+  {# also set some defaults according to our translations in case no JS or something #}
+  {% set language = request.query_dict["languagePreference"]|default("fi") %}
+  {% set language = language[0:2] %}
+  {% set translation = translations[language].email_subscriptions %}
+
+  <div class="content-wrapper">
+    <div class="systems-page">
+      {% email_subscriptions "subscription_preferences" 
+      header="{{ translation.header }}",
+      subheader_text="{{ translation.subheader_text }}",
+      unsubscribe_single_text="{{ translation.unsubscribe_single_text }}",
+      unsubscribe_all_text="{{ translation.unsubscribe_all_text }}",
+      unsubscribe_all_option="{{ translation.unsubscribe_all_option }}",
+      unsubscribe_all_unsubbed_text="{{ translation.unsubscribe_all_unsubbed_text }}",
+      resubscribe_button_text="{{ translation.resubscribe_button_text }}",
+      button_text="{{ translation.button_text }}"
+      %}
+    </div>
+  </div>
+
+{% endblock body %}
+
+{{ require_js(get_asset_url('./system.js'), { position:'footer' }) }}
